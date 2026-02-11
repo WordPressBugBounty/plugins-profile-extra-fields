@@ -3,8 +3,8 @@ Contributors: bestwebsoft
 Donate link: https://bestwebsoft.com/donate/
 Tags: add fields WordPress, add extra fields, custom fields, woocommerce extra fields, woocommerce additional fields
 Requires at least: 5.6
-Tested up to: 6.8
-Stable tag: 1.3.0
+Tested up to: 6.9
+Stable tag: 1.3.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -182,6 +182,9 @@ Please provide:
 
 == Changelog ==
 
+= V1.3.2 - 24.06.2025 =
+* Update : Compatibility with BWS Login Form has been added.
+
 = V1.3.0 - 15.07.2024 =
 * Bugfix : Non-editable fields saving issue has been fixed.
 
@@ -337,6 +340,9 @@ Please provide:
 * NEW : Screenshots are added.
 
 == Upgrade Notice ==
+
+= V1.3.2 =
+* New features added.
 
 = V1.3.0 =
 * Bugs fixed.

@@ -3375,13 +3375,13 @@ if ( ! function_exists( 'prflxtrflds_show_edit_form' ) ) {
 													foreach ( $one_entry['available_fields'] as $one_sub_entry ) {
 														$checked = ( ! empty( $one_entry['user_value'] ) && in_array( $one_sub_entry['value_id'], $one_entry['user_value'] ) );
 														?>
-														<label 
+														<label class="prflxtrflds-field
 														<?php
 														if ( $checked ) {
-															echo wp_kses_data( 'class="checked"' );
+															echo wp_kses_data( 'checked' );
 														}
 														?>
-														>
+														">
 															<input type="checkbox" class="prflxtrflds_input_checkbox"
 																name="prflxtrflds_user_field_value[<?php echo esc_attr( $one_entry['field_id'] ); ?>][]"
 																value="<?php echo esc_attr( $one_sub_entry['value_id'] ); ?>"
@@ -3401,7 +3401,7 @@ if ( ! function_exists( 'prflxtrflds_show_edit_form' ) ) {
 												case '4':
 													foreach ( $one_entry['available_fields'] as $one_sub_entry ) {
 														?>
-														<label>
+														<label class="prflxtrflds-field">
 															<input type="radio" class="prflxtrflds_input_radio"
 																name="prflxtrflds_user_field_value[<?php echo esc_attr( $one_entry['field_id'] ); ?>]"
 																value="<?php echo esc_attr( $one_sub_entry['value_id'] ); ?>"
@@ -3872,13 +3872,13 @@ if ( ! function_exists( 'prflxtrflds_fields_table' ) ) {
 										foreach ( $one_entry['available_fields'] as $one_sub_entry ) {
 											$checked = ( ! empty( $one_entry['user_value'] ) && in_array( $one_sub_entry['value_id'], $one_entry['user_value'] ) );
 											?>
-											<label 
+											<label class="prflxtrflds-field
 											<?php
 											if ( $checked ) {
-												echo wp_kses_data( 'class="checked"' );
+												echo wp_kses_data( 'checked' );
 											}
 											?>
-											>
+											">
 												<input type="checkbox" class="prflxtrflds_input_checkbox"
 													name="prflxtrflds_user_field_value[<?php echo esc_attr( $one_entry['field_id'] ); ?>][]"
 													value="<?php echo esc_attr( $one_sub_entry['value_id'] ); ?>"
@@ -3898,7 +3898,7 @@ if ( ! function_exists( 'prflxtrflds_fields_table' ) ) {
 									case '4':
 										foreach ( $one_entry['available_fields'] as $one_sub_entry ) {
 											?>
-											<label>
+											<label class="prflxtrflds-field">
 												<input type="radio" class="prflxtrflds_input_radio"
 													name="prflxtrflds_user_field_value[<?php echo esc_attr( $one_entry['field_id'] ); ?>]"
 													value="<?php echo esc_attr( $one_sub_entry['value_id'] ); ?>"
@@ -4961,7 +4961,7 @@ if ( ! function_exists( 'prflxtrflds_get_field_html' ) ) {
 			if ( is_array( $field_data['available_fields'] ) ) {
 				foreach ( $field_data['available_fields'] as $key => $checkbox_data ) {
 					$html .= sprintf(
-						'<label><input class="prflxtrflds_input_checkbox" type="checkbox" name="%1$s[%2$s][' . $key . ']" value="%3$s" %4$s %5$s %6$s />%7$s</label><br />',
+						'<label class="prflxtrflds-field"><input class="prflxtrflds_input_checkbox" type="checkbox" name="%1$s[%2$s][' . $key . ']" value="%3$s" %4$s %5$s %6$s /> %7$s</label><br />',
 						$name,
 						$field_data['field_id'],
 						$checkbox_data['value_id'],
@@ -4978,7 +4978,7 @@ if ( ! function_exists( 'prflxtrflds_get_field_html' ) ) {
 			if ( is_array( $field_data['available_fields'] ) ) {
 				foreach ( $field_data['available_fields'] as $key => $radio_data ) {
 					$html .= sprintf(
-						'<label><input class="prflxtrflds_input_radio" type="radio" name="%1$s[%2$s]" value="%3$s" %4$s %5$s %6$s >%7$s</label><br />',
+						'<label class="prflxtrflds-field"><input class="prflxtrflds_input_radio" type="radio" name="%1$s[%2$s]" value="%3$s" %4$s %5$s %6$s > %7$s</label><br />',
 						$name,
 						$field_data['field_id'],
 						$radio_data['value_id'],
@@ -5097,13 +5097,13 @@ if ( ! function_exists( 'prflxtrflds_get_field_html' ) ) {
 
 		if ( 'url' === $field_types[ $field_data['field_type_id'] ] ) {
 			$html = sprintf(
-				'<input type="text" class="medium" name="%1$s[%2$s]" ',
+				'<input type="text" class="medium" name="%1$s[%2$s]" %3$s %4$s %5$s value="%6$s" />',
 				$name,
 				$field_data['field_id'],
-				$value,
 				$max_length,
 				$editable_attr,
-				$required_attr
+				$required_attr,
+				$value
 			);
 		}
 
@@ -5476,7 +5476,8 @@ if ( ! function_exists( 'prflxtrflds_wp_new_user_notification_email_admin' ) ) {
 			$wp_new_user_notification_email_admin['message'] .= "\r\n";
 			$prflxtrflds_field_name                           = array_map( 'sanitize_text_field', array_map( 'wp_unslash', $_POST['prflxtrflds_field_name'] ) );
 			foreach ( $prflxtrflds_field_name as $key => $name ) {
-				$wp_new_user_notification_email_admin['message'] .= $name . ': ' . ( isset( $_POST['prflxtrflds_user_field_value'][ $key ] ) ? sanitize_text_field( wp_unslash( $_POST['prflxtrflds_user_field_value'][ $key ] ) ) : '' ) . "\r\n\r\n";
+				$value = isset( $_POST['prflxtrflds_user_field_value'][ $key ] ) ? ( is_array( $_POST['prflxtrflds_user_field_value'][ $key ] ) ? implode( ',', array_map( 'sanitize_text_field', array_map( 'wp_unslash', $_POST['prflxtrflds_user_field_value'][ $key ] ) ) ) : sanitize_text_field( wp_unslash( $_POST['prflxtrflds_user_field_value'][ $key ] ) ) ) : '';
+				$wp_new_user_notification_email_admin['message'] .= $name . ': ' . $value . "\r\n\r\n";
 			}
 		}
 
@@ -5600,5 +5601,4 @@ add_filter( 'registration_errors', 'prflxtrflds_register_error' );
 /** Hook for display script in footer */
 add_action( 'wp_footer', 'prflxtrflds_display_front_script' );
 /* BWS Login Register compatibility */
-add_filter( 'lgnrgstrfrm_prflxtrflds_get_fields', 'prflxtrflds_get_lgnrgstrfrm_fields' );
 add_filter( 'lgnrgstrfrm_add_field', 'prflxtrflds_get_lgnrgstrfrm_fields_table', 10, 2 );
