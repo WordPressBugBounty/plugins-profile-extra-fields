@@ -6,7 +6,7 @@ Description: Add extra fields to default WordPress user profile. The easiest way
 Author: BestWebSoft
 Text Domain: profile-extra-fields
 Domain Path: /languages
-Version: 1.3.2
+Version: 1.3.3
 Author URI: https://bestwebsoft.com/
 License: GPLv3 or later
  */
@@ -418,21 +418,67 @@ if ( ! function_exists( 'prflxtrflds_get_options_default' ) ) {
 		global $prflxtrflds_plugin_info;
 		/** Create array with default options */
 		return array(
-			'plugin_option_version'      => $prflxtrflds_plugin_info['Version'],
-			'display_settings_notice'    => 1,
-			'suggest_feature_banner'     => 1,
-			'sort_sequence'              => 'ASC',
-			'available_fields'           => array(),
-			'available_values'           => array(),
-			'show_empty_columns'         => 0,
-			'show_id'                    => 1,
-			'header_table'               => 'columns', /*rows */
-			'empty_value'                => __( 'The field is empty', 'profile-extra-fields' ),
-			'not_available_message'      => __( 'N/A', 'profile-extra-fields' ),
-			'shortcode_debug'            => 1,
-			'display_user_name'          => 'username',
-			'user_section_profile_title' => __( 'Profile Extra Fields', 'profile-extra-fields' ),
-			'user_section_car_title'     => __( 'Car Rental V2 Extra Fields', 'profile-extra-fields' ),
+			'plugin_option_version'         => $prflxtrflds_plugin_info['Version'],
+			'display_settings_notice'       => 1,
+			'suggest_feature_banner'        => 1,
+			'sort_sequence'                 => 'ASC',
+			'available_fields'              => array(),
+			'available_values'              => array(),
+			'show_empty_columns'            => 0,
+			'show_id'                       => 1,
+			'header_table'                  => 'columns', /*rows */
+			'empty_value'                   => __( 'The field is empty', 'profile-extra-fields' ),
+			'not_available_message'         => __( 'N/A', 'profile-extra-fields' ),
+			'shortcode_debug'               => 1,
+			'display_user_name'             => 'username',
+			'user_section_profile_title'    => __( 'Profile Extra Fields', 'profile-extra-fields' ),
+			'user_section_car_title'        => __( 'Car Rental V2 Extra Fields', 'profile-extra-fields' ),
+			'notify_admin_register'         => 0,//wp_new_user_notification_email_admin 
+			'notify_user_register'          => 0,
+			'notify_admin_register_subject' => __( 'New User Registration on Your Website', 'profile-extra-fields' ),
+			'notify_admin_register_message' => __( 'Hello,
+
+A new user has registered on your website.
+
+User Details:
+
+Username: {username}
+
+Email: {email}
+
+Registration Date: {date}
+
+{profile_extra_fields}
+
+You can view and manage this user in your WordPress dashboard {dashboardurl}.', 'profile-extra-fields' ),
+			'notify_admin_update_subject'   => __( 'User Profile Updated', 'profile-extra-fields' ),
+			'notify_admin_update_message'   => __( 'Hello,
+
+A user has updated their profile on your website.
+
+User Details:
+
+Username: {username}
+
+Email: {email}
+
+You may review the updated information in your WordPress dashboard {dashboardurl}.', 'profile-extra-fields' ),
+			'notify_user_register_subject'  => __( 'Welcome! Your Registration is Complete', 'profile-extra-fields' ),
+			'notify_user_register_message'  => __( 'Hello {username},
+
+Thank you for registering on our website.
+
+Your account has been successfully created, and you can now log in using your credentials.
+
+To set your password, visit the following address: {loginurl}
+
+If you have any questions, feel free to contact us.', 'profile-extra-fields' ),
+			'notify_user_update_subject'    => __( 'Your Profile Has Been Updated', 'profile-extra-fields' ),
+			'notify_user_update_message'    => __( 'Hello {username},
+
+This is a confirmation that your profile information has been successfully updated.
+
+If you did not make these changes, please contact us immediately or change your password {loginurl}.', 'profile-extra-fields' ),
 		);
 	}
 }
@@ -5470,18 +5516,66 @@ if ( ! function_exists( 'prflxtrflds_wp_new_user_notification_email_admin' ) ) {
 	 * Admin email message for new user
 	 *
 	 * @param array $wp_new_user_notification_email_admin Email array for admin.
+	 * @param object $user User object.
+	 * @param string $blogname Blog name.
 	 */
-	function prflxtrflds_wp_new_user_notification_email_admin( $wp_new_user_notification_email_admin ) {
+	function prflxtrflds_wp_new_user_notification_email_admin( $wp_new_user_notification_email_admin, $user, $blogname ) {
+		global $prflxtrflds_options;
+		$prflxtrflds_field_message = '';
+
 		if ( isset( $_POST['prflxtrflds_field_name'], $_POST['prflxtrflds_user_field_value'] ) ) {
-			$wp_new_user_notification_email_admin['message'] .= "\r\n";
 			$prflxtrflds_field_name                           = array_map( 'sanitize_text_field', array_map( 'wp_unslash', $_POST['prflxtrflds_field_name'] ) );
 			foreach ( $prflxtrflds_field_name as $key => $name ) {
 				$value = isset( $_POST['prflxtrflds_user_field_value'][ $key ] ) ? ( is_array( $_POST['prflxtrflds_user_field_value'][ $key ] ) ? implode( ',', array_map( 'sanitize_text_field', array_map( 'wp_unslash', $_POST['prflxtrflds_user_field_value'][ $key ] ) ) ) : sanitize_text_field( wp_unslash( $_POST['prflxtrflds_user_field_value'][ $key ] ) ) ) : '';
-				$wp_new_user_notification_email_admin['message'] .= $name . ': ' . $value . "\r\n\r\n";
+				$prflxtrflds_field_message .= $name . ': ' . $value . "\r\n\r\n";
+			}
+		}
+
+		if ( isset( $prflxtrflds_options['notify_admin_register'] ) && 1 === $prflxtrflds_options['notify_admin_register'] ) {
+			if ( ! empty( $prflxtrflds_options['notify_admin_register_subject'] ) ) {
+				$wp_new_user_notification_email_admin['subject'] = $prflxtrflds_options['notify_admin_register_subject'];
+			}
+			if ( ! empty( $prflxtrflds_options['notify_admin_register_message'] ) ) {
+				$wp_new_user_notification_email_admin['message'] = $prflxtrflds_options['notify_admin_register_message'];
+				$wp_new_user_notification_email_admin['message'] = str_replace( array( '{username}', '{email}', '{date}', '{profile_extra_fields}', '{dashboardurl}' ), array( $user->user_login, $user->user_email, wp_date( get_option( 'date_format' ), admin_url() ), $prflxtrflds_field_message ), $wp_new_user_notification_email_admin['message'] );
+			}
+		} else {
+			if ( isset( $_POST['prflxtrflds_field_name'], $_POST['prflxtrflds_user_field_value'] ) ) {
+				$wp_new_user_notification_email_admin['message'] .= "\r\n" . $prflxtrflds_field_message . "\r\n";
 			}
 		}
 
 		return $wp_new_user_notification_email_admin;
+	}
+}
+
+if ( ! function_exists( 'prflxtrflds_wp_new_user_notification_email_user' ) ) {
+	/**
+	 * Email message to new user
+	 *
+	 * @param array $wp_new_user_notification_email Email array for user.
+	 * @param object $user User object.
+	 * @param string $blogname Blog name.
+	 */
+	function prflxtrflds_wp_new_user_notification_email_user( $wp_new_user_notification_email, $user, $blogname ) {
+		global $prflxtrflds_options;
+
+		if ( isset( $prflxtrflds_options['notify_user_register'] ) && 1 === $prflxtrflds_options['notify_user_register'] ) {
+			if ( ! empty( $prflxtrflds_options['notify_user_register_subject'] ) ) {
+				$wp_new_user_notification_email['subject'] = $prflxtrflds_options['notify_user_register_subject'];
+			}
+			if ( ! empty( $prflxtrflds_options['notify_user_register_message'] ) ) {
+				$key = get_password_reset_key( $user );
+				if ( ! is_wp_error( $key ) ) {
+					$login_url = network_site_url( 'wp-login.php?login=' . rawurlencode( $user->user_login ) . "&key=$key&action=rp", 'login' ) . "\r\n\r\n" . wp_login_url();
+
+					$wp_new_user_notification_email['message'] = $prflxtrflds_options['notify_user_register_message'];
+					$wp_new_user_notification_email['message'] = str_replace( array( '{username}', '{loginurl}' ), array( $user->user_login, $login_url ), $wp_new_user_notification_email['message'] );
+				}
+			}
+		}
+
+		return $wp_new_user_notification_email;
 	}
 }
 
@@ -5580,7 +5674,8 @@ add_action( 'admin_enqueue_scripts', 'prflxtrflds_load_script' );
 /** Check fields from user settings page */
 add_filter( 'user_profile_update_errors', 'prflxtrflds_create_user_error' );
 /** Adding fields to the admin email after registering a new user */
-add_filter( 'wp_new_user_notification_email_admin', 'prflxtrflds_wp_new_user_notification_email_admin' );
+add_filter( 'wp_new_user_notification_email_admin', 'prflxtrflds_wp_new_user_notification_email_admin', 10, 3 );
+add_filter( 'wp_new_user_notification_email', 'prflxtrflds_wp_new_user_notification_email_user', 10, 3 );
 /** Save order through ajax */
 add_action( 'wp_ajax_prflxtrflds_table_order', 'prflxtrflds_table_order' );
 add_action( 'wp_ajax_prflxtrflds_get_users', 'prflxtrflds_get_users' );

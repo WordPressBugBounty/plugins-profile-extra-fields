@@ -63,6 +63,15 @@ if ( ! class_exists( 'Prflxtrflds_Settings_Tabs' ) ) {
 				/* Settings Tab */
 				$this->options['user_section_profile_title'] = isset( $_POST['prflxtrflds_user_section_profile_title'] ) ? sanitize_text_field( wp_unslash( $_POST['prflxtrflds_user_section_profile_title'] ) ) : $this->options['user_section_profile_title'];
 				$this->options['user_section_car_title']     = isset( $_POST['prflxtrflds_user_section_car_title'] ) ? sanitize_text_field( wp_unslash( $_POST['prflxtrflds_user_section_car_title'] ) ) : $this->options['user_section_car_title'];
+				
+				$this->options['notify_admin_register'] = isset( $_POST['prflxtrflds_notify_admin_register'] ) ? 1 : 0;
+				$this->options['notify_user_register']  = isset( $_POST['prflxtrflds_notify_user_register'] ) ? 1 : 0;
+				
+				$this->options['notify_admin_register_subject'] = isset( $_POST['prflxtrflds_notify_admin_register_subject'] ) ? wp_kses_post( wp_unslash( $_POST['prflxtrflds_notify_admin_register_subject'] ) ) : $this->options['notify_admin_register_subject'];
+				$this->options['notify_admin_register_message'] = isset( $_POST['prflxtrflds_notify_admin_register_message'] ) ? wp_kses_post( wp_unslash( $_POST['prflxtrflds_notify_admin_register_message'] ) ) : $this->options['notify_admin_register_message'];
+
+				$this->options['notify_user_register_subject'] = isset( $_POST['prflxtrflds_notify_user_register_subject'] ) ? wp_kses_post( wp_unslash( $_POST['prflxtrflds_notify_user_register_subject'] ) ) : $this->options['notify_user_register_subject'];
+				$this->options['notify_user_register_message'] = isset( $_POST['prflxtrflds_notify_user_register_message'] ) ? wp_kses_post( wp_unslash( $_POST['prflxtrflds_notify_user_register_message'] ) ) : $this->options['notify_user_register_message'];
 
 				update_option( 'prflxtrflds_options', $this->options );
 				$message = __( 'Settings saved.', 'profile-extra-fields-pro' );
@@ -98,7 +107,7 @@ if ( ! class_exists( 'Prflxtrflds_Settings_Tabs' ) ) {
 							<input class="regular-text" type="text" name="prflxtrflds_user_section_car_title" value="<?php echo esc_html( $this->options['user_section_car_title'] ); ?>" />
 						</label>
 					</td>
-				</tr>							
+				</tr>
 			</table>
 			<?php wp_nonce_field( 'prflxtrflds_settings_action', 'prflxtrflds_settings_nonce_field' ); ?>
 			<?php
@@ -143,12 +152,120 @@ if ( ! class_exists( 'Prflxtrflds_Settings_Tabs' ) ) {
 									</label>
 								</td>
 							</tr>
+							<tr valign="top">
+								<th scope="row"><?php esc_html_e( 'Admin Notification — Profile Updated', 'profile-extra-fields' ); ?> </th>
+								<td>
+									<label>
+										<input type="checkbox" value="1" disabled="disabled" />
+										<span class="bws_info"><?php esc_html_e( 'Allows you to receive an email when a user\'s profile is updated', 'profile-extra-fields' ); ?></span>
+									</label>
+								</td>
+							</tr>
+							<tr valign="top">
+								<th scope="row"><?php esc_html_e( 'Profile Updated Subject', 'profile-extra-fields' ); ?> </th>
+								<td>
+									<label>
+										<input class="regular-text" type="text" disabled="disabled" value="<?php echo esc_html( $this->options['notify_admin_update_subject'] ); ?>" />
+									</label>
+								</td>
+							</tr>
+							<tr valign="top" class="prflxtrflds_notify_admin_update">
+								<th scope="row"><?php esc_html_e( 'Profile Updated Message', 'profile-extra-fields' ); ?> </th>
+								<td>
+									<label>
+										<textarea disabled="disabled" rows="7"><?php echo esc_html( $this->options['notify_admin_update_message'] ); ?></textarea>
+										<span class="bws_info"><?php esc_html_e( 'You can use the following shortcodes in your message', 'profile-extra-fields' ); ?>: <code>{username}</code>, <code>{email}</code>, <code>{dashboardurl}</code></span>
+									</label>
+								</td>
+							</tr>
+							<tr valign="top">
+								<th scope="row"><?php esc_html_e( 'User Notification — Profile Updated', 'profile-extra-fields' ); ?> </th>
+								<td>
+									<label>
+										<input type="checkbox" disabled="disabled" value="1" />
+										<span class="bws_info"><?php esc_html_e( 'Allows the user to receive an email upon successful profile update', 'profile-extra-fields' ); ?></span>
+									</label>
+								</td>
+							</tr>
+							<tr valign="top" class="prflxtrflds_notify_user_update">
+								<th scope="row"><?php esc_html_e( 'Profile Updated Subject', 'profile-extra-fields' ); ?> </th>
+								<td>
+									<label>
+										<input class="regular-text" type="text" disabled="disabled" value="<?php echo esc_html( $this->options['notify_user_update_subject'] ); ?>" />
+									</label>
+								</td>
+							</tr>
+							<tr valign="top" class="prflxtrflds_notify_user_update">
+								<th scope="row"><?php esc_html_e( 'Profile Updated Message', 'profile-extra-fields' ); ?> </th>
+								<td>
+									<label>
+										<textarea disabled="disabled" rows="7"><?php echo esc_html( $this->options['notify_user_update_message'] ); ?></textarea>
+										<span class="bws_info"><?php esc_html_e( 'You can use the following shortcodes in your message', 'profile-extra-fields' ); ?>: <code>{username}</code>, <code>{loginurl}</code></span>
+									</label>
+								</td>
+							</tr>
 						</table>
 					</div>
 					<?php $this->bws_pro_block_links(); ?>
 				</div>
 				<?php
 			}
+			?>
+			<table class="form-table ">
+				<tr valign="top">
+					<th scope="row"><?php esc_html_e( 'Admin Notification — New User Registration', 'profile-extra-fields' ); ?> </th>
+					<td>
+						<label>
+							<input type="checkbox" id="prflxtrflds_notify_admin_register" name="prflxtrflds_notify_admin_register" <?php checked( 1, $this->options['notify_admin_register'] ); ?> value="1" />
+							<span class="bws_info"><?php esc_html_e( 'Allows you to replace the default email when registering a user', 'profile-extra-fields' ); ?></span>
+						</label>
+					</td>
+				</tr>
+				<tr valign="top" class="prflxtrflds_notify_admin_register">
+					<th scope="row"><?php esc_html_e( 'New User Registration Subject', 'profile-extra-fields' ); ?> </th>
+					<td>
+						<label>
+							<input class="regular-text" type="text" name="prflxtrflds_notify_admin_register_subject" value="<?php echo esc_html( $this->options['notify_admin_register_subject'] ); ?>" />
+						</label>
+					</td>
+				</tr>
+				<tr valign="top" class="prflxtrflds_notify_admin_register">
+					<th scope="row"><?php esc_html_e( 'New User Registration Message', 'profile-extra-fields' ); ?> </th>
+					<td>
+						<label>
+							<textarea name="prflxtrflds_notify_admin_register_message" rows="7"><?php echo esc_html( $this->options['notify_admin_register_message'] ); ?></textarea>
+							<span class="bws_info"><?php esc_html_e( 'You can use the following shortcodes in your message', 'profile-extra-fields' ); ?>: <code>{username}</code>, <code>{email}</code>, <code>{date}</code>, <code>{profile_extra_fields}</code>, <code>{dashboardurl}</code></span>
+						</label>
+					</td>
+				</tr>
+				<tr valign="top">
+					<th scope="row"><?php esc_html_e( 'User Notification — Registration Successful', 'profile-extra-fields' ); ?> </th>
+					<td>
+						<label>
+							<input type="checkbox" id="prflxtrflds_notify_user_register" name="prflxtrflds_notify_user_register" <?php checked( 1, $this->options['notify_user_register'] ); ?> value="1" />
+							<span class="bws_info"><?php esc_html_e( 'Allows the user to receive an email upon successful registration', 'profile-extra-fields' ); ?></span>
+						</label>
+					</td>
+				</tr>
+				<tr valign="top" class="prflxtrflds_notify_user_register">
+					<th scope="row"><?php esc_html_e( 'Registration Successful Subject', 'profile-extra-fields' ); ?> </th>
+					<td>
+						<label>
+							<input class="regular-text" type="text" name="prflxtrflds_notify_user_register_subject" value="<?php echo esc_html( $this->options['notify_user_register_subject'] ); ?>" />
+						</label>
+					</td>
+				</tr>
+				<tr valign="top" class="prflxtrflds_notify_user_register">
+					<th scope="row"><?php esc_html_e( 'Registration Successful Message', 'profile-extra-fields' ); ?> </th>
+					<td>
+						<label>
+							<textarea name="prflxtrflds_notify_user_register_message" rows="7"><?php echo esc_html( $this->options['notify_user_register_message'] ); ?></textarea>
+							<span class="bws_info"><?php esc_html_e( 'You can use the following shortcodes in your message', 'profile-extra-fields' ); ?>: <code>{username}</code>, <code>{loginurl}</code></span>
+						</label>
+					</td>
+				</tr>
+			</table>
+			<?php
 		}
 
 		/**

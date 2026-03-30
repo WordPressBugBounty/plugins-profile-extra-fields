@@ -4,7 +4,7 @@ Donate link: https://bestwebsoft.com/donate/
 Tags: add fields WordPress, add extra fields, custom fields, woocommerce extra fields, woocommerce additional fields
 Requires at least: 5.6
 Tested up to: 6.9
-Stable tag: 1.3.2
+Stable tag: 1.3.3
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -23,42 +23,60 @@ Easily display additional user data with shortcodes anywhere on your site.
 
 = Free Features =
 
-* Add unlimited custom fields to WordPress user profiles
-* Display extra user data with a shortcode:
-	* All users
-	* Logged-in user
-	* Specific user role
-	* Specific user ID
-	* Current user
-* Display selected fields via shortcode
-* Show fields in the registration form
-* Export all user data to a CSV file
-* Customize shortcode output:
-	* Table layout: rows or columns
-	* Sort by username: ASC / DESC
-	* Show empty fields
-	* Show user ID
-	* Display field shortcodes with values
-* Customize validation messages:
-	* For required fields
-	* For unavailable fields
-* Enable debug mode for troubleshooting
-* Choose from various field types:
-	* Text, Textarea, Checkbox, Radiobutton
-	* Dropdown, Date, Time, Date & Time
-	* Number, Phone, URL
-* Field customization:
-	* Field name and description
-	* Max length for text/number
-	* Required symbol and setting
-	* Set field order (drag & drop)
-	* Choose date/time/phone format
-	* Limit field visibility to specific roles
-* Front-end form to edit user data
-* Compatible with the latest WordPress version
-* Lightweight, fast, and easy to set up
-* Translation-ready and RTL support
+* Add unlimited number of extra fields
+* Use shortcode to display user data on your page or post:
+	* All users data
+	* Logged in user data
+	* Certain user role data
+	* Certain user data
+	* Current user data
 * Compatible with [Car Rental V2](https://bestwebsoft.com/products/wordpress/plugins/car-rental-v2/?k=a8f05dd9a324c003f22923d43eb75eea)
+* Display profile extra fields in user registration form
+* Display certain fields via the shortcode
+* Export all user data to a CSV file 
+* User data shortcode settings:
+	* Choose user data rotation on page or post
+		* Rows
+		* Columns
+	* Sort user data by user name in the table:
+		* ASC (ascending order from lowest to highest values)
+		* DESC (descending order from highest to lowest values)
+	* Show empty fields if user missed them
+	* Show user ID in the table
+	* Display the shortcode with the field value
+	* Customize validation message for:
+		* Empty fields
+		* Unavailable fields
+	* Enable or disable debug mode
+* Choose extra field type:
+	* Text
+	* Textarea
+	* Checkbox
+	* Radiobutton
+	* Dropdown list
+	* Date
+	* Time
+	* Date and time
+	* Number
+	* Phone number
+	* URL
+* Customize extra fields:
+	* Name
+	* Description
+* Set the max length for text or number in the appropriate fields
+* Set the required symbol
+* Make any field required
+* Set the fields order
+* Choose date and time formats for the corresponding field types
+* Set the phone number format for the corresponding field type
+* Drag and drop fields to change their order in the list
+* Make extra fields available for certain user roles
+* Display user data edit form on the front pages
+* Notify user and admin about User Registration
+* Compatible with latest WordPress version
+* Incredibly simple settings for fast setup without modifying code
+* Detailed step-by-step documentation and videos
+* Multilingual and RTL ready
 
 > **Pro Features**
 >
@@ -73,6 +91,7 @@ Easily display additional user data with shortcodes anywhere on your site.
 > * Integration with Gravity Forms
 > * Integration with [Subscriber plugin](https://bestwebsoft.com/products/wordpress/plugins/subscriber/?k=fb814b406c52fdf3d8c48b9a342aaa69)
 > * Add custom code from plugin settings
+> * Notify user and admin about Profile Updated
 > * Bulk import values for:
 >   * Checkbox
 >   * Dropdown
@@ -181,6 +200,11 @@ Please provide:
 15. Additional Car Rental fields on the user profile page.
 
 == Changelog ==
+
+= V1.3.3 - 27.03.2026 =
+* Update : All functionality was updated for WordPress 6.9.4.
+* NEW : Notify user and admin about new user registration.
+* Pro : Notify user and admin about user profile updated.
 
 = V1.3.2 - 24.06.2025 =
 * Update : Compatibility with BWS Login Form has been added.
@@ -340,6 +364,10 @@ Please provide:
 * NEW : Screenshots are added.
 
 == Upgrade Notice ==
+
+= V1.3.3 =
+* The compatibility with new WordPress version updated.
+* New features added.
 
 = V1.3.2 =
 * New features added.
