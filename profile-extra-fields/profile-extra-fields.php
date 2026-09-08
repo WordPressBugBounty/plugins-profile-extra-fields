@@ -6,7 +6,7 @@ Description: Add extra fields to default WordPress user profile. The easiest way
 Author: BestWebSoft
 Text Domain: profile-extra-fields
 Domain Path: /languages
-Version: 1.3.6
+Version: 1.3.7
 Author URI: https://bestwebsoft.com/
 License: GPLv3 or later
  */
@@ -5313,7 +5313,7 @@ if ( ! function_exists( 'prflxtrflds_save_data_from_registration_form' ) ) {
 									array(
 										'user_id'    => esc_sql( $user_id ),
 										'field_id'   => esc_sql( absint( $id ) ),
-										'user_value' => esc_sql( sanitize_text_field( wp_unslash( $user_value ) ) ),
+										'user_value' => esc_sql( sanitize_text_field( wp_unslash( $val ) ) ),
 									)
 								);
 							}
